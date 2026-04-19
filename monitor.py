@@ -10,6 +10,7 @@ import time
 import smtplib
 import logging
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from email.message import EmailMessage
 from dotenv import load_dotenv
 import requests
@@ -150,7 +151,7 @@ class TeslaMonitor:
         lat = drive_state.get("latitude", "?")
         lon = drive_state.get("longitude", "?")
         speed = drive_state.get("speed") or 0
-        timestamp = datetime.now().strftime("%I:%M %p")
+        timestamp = datetime.now(ZoneInfo("America/New_York")).strftime("%I:%M %p ET")
         maps_link = f"maps.google.com/?q={lat},{lon}"
 
         body = f"{self.vehicle_name} started a trip at {timestamp}\n{maps_link}"
