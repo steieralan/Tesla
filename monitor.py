@@ -158,7 +158,9 @@ class TeslaMonitor:
 
         body = f"{self.vehicle_name} started a trip at {timestamp}\n{maps_link}"
 
-        if TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN:
+        use_twilio = os.getenv("USE_TWILIO", "false").lower() == "true"
+
+        if use_twilio and TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN:
             try:
                 client = TwilioClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
                 client.messages.create(body=body, from_=TWILIO_FROM, to=TWILIO_TO)
