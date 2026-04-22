@@ -49,4 +49,6 @@ jobs:
           TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
           TWILIO_FROM: ${{ secrets.TWILIO_FROM }}
           TWILIO_TO: ${{ secrets.TWILIO_TO }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
         run: python monitor.py --loop
