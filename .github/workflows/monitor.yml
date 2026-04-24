@@ -15,7 +15,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests python-dotenv twilio
+        run: pip install requests python-dotenv
 
       - name: Restore state cache
         uses: actions/cache@v4
@@ -45,10 +45,6 @@ jobs:
         env:
           TESLA_CLIENT_ID: ${{ secrets.TESLA_CLIENT_ID }}
           TESLA_CLIENT_SECRET: ${{ secrets.TESLA_CLIENT_SECRET }}
-          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
-          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
-          TWILIO_FROM: ${{ secrets.TWILIO_FROM }}
-          TWILIO_TO: ${{ secrets.TWILIO_TO }}
-          GMAIL_USER: ${{ secrets.GMAIL_USER }}
-          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python monitor.py --loop

@@ -7,24 +7,18 @@ import os
 import sys
 import json
 import time
-import smtplib
 import logging
+import urllib.request
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from email.message import EmailMessage
 from dotenv import load_dotenv
 import requests
-from twilio.rest import Client as TwilioClient
 
 load_dotenv()
 
 # --- Config ---
-TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
-TWILIO_FROM = os.getenv("TWILIO_FROM")
-TWILIO_TO = os.getenv("TWILIO_TO")
-GMAIL_USER = os.getenv("GMAIL_USER")
-GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 CLIENT_ID = os.getenv("TESLA_CLIENT_ID")
 CLIENT_SECRET = os.getenv("TESLA_CLIENT_SECRET")
 
@@ -154,34 +148,18 @@ class TeslaMonitor:
         lat = drive_state.get("latitude", "?")
         lon = drive_state.get("longitude", "?")
         timestamp = datetime.now(ZoneInfo("America/New_York")).strftime("%I:%M %p ET")
-        maps_link = f"maps.google.com/?q={lat},{lon}"
+        maps_link = f"https://maps.google.com/?q={lat},{lon}"
 
         body = f"{self.vehicle_name} started a trip at {timestamp}\n{maps_link}"
 
-        use_twilio = os.getenv("USE_TWILIO", "false").lower() == "true"
-
-        if use_twilio and TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN:
-            try:
-                client = TwilioClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-                client.messages.create(body=body, from_=TWILIO_FROM, to=TWILIO_TO)
-                log.info("SMS alert sent via Twilio!")
-                return
-            except Exception as e:
-                log.error(f"Twilio failed: {e}. Falling back to email.")
-
-        # Fallback: send email
         try:
-            msg = EmailMessage()
-            msg.set_content(body)
-            msg["Subject"] = f"Tesla Trip Started"
-            msg["From"] = GMAIL_USER
-            msg["To"] = GMAIL_USER
-            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-                server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
-                server.send_message(msg)
-            log.info("Alert sent via email!")
+            url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+            payload = json.dumps({"chat_id": TELEGRAM_CHAT_ID, "text": body}).encode()
+            req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
+            urllib.request.urlopen(req)
+            log.info("Alert sent via Telegram!")
         except Exception as e:
-            log.error(f"Email failed: {e}")
+            log.error(f"Telegram failed: {e}")
 
     def poll(self):
         """Single poll cycle."""
