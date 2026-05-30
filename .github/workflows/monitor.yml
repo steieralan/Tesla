@@ -32,9 +32,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: tokens.json
-          key: tesla-tokens-${{ github.run_id }}
+          key: tesla-tokens-v2-${{ github.run_id }}
           restore-keys: |
-            tesla-tokens-
+            tesla-tokens-v2-
 
       - name: Write initial tokens (first run only)
         env:
