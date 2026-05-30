@@ -28,21 +28,10 @@ jobs:
           restore-keys: |
             tesla-state-
 
-      - name: Restore tokens cache
-        uses: actions/cache@v4
-        with:
-          path: tokens.json
-          key: tesla-tokens-v2-${{ github.run_id }}
-          restore-keys: |
-            tesla-tokens-v2-
-
-      - name: Write initial tokens (first run only)
+      - name: Write fresh tokens from secret
         env:
           TESLA_TOKENS: ${{ secrets.TESLA_TOKENS }}
-        run: |
-          if [ ! -f tokens.json ]; then
-            echo "$TESLA_TOKENS" > tokens.json
-          fi
+        run: echo "$TESLA_TOKENS" > tokens.json
 
       - name: Run monitor (4 min loop, 120s intervals = 2 polls per run)
         env:
