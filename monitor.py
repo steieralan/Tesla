@@ -202,9 +202,9 @@ class TeslaMonitor:
         except Exception as e:
             log.error(f"Unexpected error: {e}")
 
-    def run_for(self, duration=270, interval=60):
+    def run_for(self, duration=240, interval=120):
         """Run checks for a fixed duration (for GitHub Actions).
-        Default: 4.5 minutes with 60s intervals, leaving buffer before 5min cron."""
+        Default: 4 minutes with 120s intervals = 2 polls per run, staying within Tesla API budget."""
         self.select_vehicle()
         start = time.time()
         log.info(f"Running for {duration}s with {interval}s intervals.")
