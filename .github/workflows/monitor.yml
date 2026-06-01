@@ -1,12 +1,8 @@
 name: Tesla Trip Monitor
 on:
-  schedule:
-    # Active hours: ~6am–11pm Eastern (during EDT)
-    # 10:00–02:55 UTC covers EDT 06:00–22:55 ET
-    # Re-enable schedule after auto-disable
-    - cron: '*/5 10-23 * * *'
-    - cron: '*/5 0-2 * * *'
-  workflow_dispatch:        # manual trigger
+  # Scheduled triggers are handled externally by cron-job.org via the
+  # workflow_dispatch API (see https://cron-job.org → Tesla cronjob).
+  workflow_dispatch:
 
 jobs:
   monitor:
